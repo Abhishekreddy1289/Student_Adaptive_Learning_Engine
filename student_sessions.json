@@ -1,0 +1,97 @@
+{
+    "124": {
+        "b7a4f359e09e4a6ea6f691e4b748d932": {
+            "session_id": "b7a4f359e09e4a6ea6f691e4b748d932",
+            "student_id": "124",
+            "student_level": "intermediate",
+            "difficulty_level": "medium",
+            "learning_goals": [
+                "Learn Python",
+                "Understand FastAPI"
+            ],
+            "session_state": "in-progress",
+            "session_progress": 3.0,
+            "session_start_time": "2025-01-18T15:08:31.134009",
+            "interactions": [
+                {
+                    "interaction_id": "52d91d9612974e90b682facb3cdac83e",
+                    "query": "1. In Python, what is the difference between a list and a tuple? Provide an example of when you would choose a tuple over a list.",
+                    "rephrased_query": "In Python, what is the difference between a list and a tuple? Provide an example of when you would choose a tuple over a list.",
+                    "answer": "\nIt looks like you've encountered an interesting question about lists and tuples in Python. Since you're at an intermediate level, let's dive deeper into how these data structures work and their use cases.\n\nConsider how you might build a recipe book. Would you prefer to use a list (which allows for modifications, additions, and deletions of recipes) or a tuple (which is immutable and allows for original data integrity)?\n\nImagine you've decided to create a draft list of recipes you want to try out; it makes sense to use a list here because you might want to add or remove recipes:\n\n```python\nrecipe_list = [\"Pasta\", \"Sushi\", \"Hamburger\"]\n```\n\nHowever, once you finalize your special collection of family secret recipes, where no changes should be allowed, you might want to use a tuple:\n```python\nfinal_recipes = (\"Grandma's Pie\", \"Mom's Lasagna\", \"Dad's BBQ Ribs\")\n```\n\nDo you notice any differences based on this analogy? Can you think about a scenario in your coding projects where immutability (like that of a tuple) would be important?",
+                    "interaction_time": "2025-01-18T15:18:42.189963",
+                    "response_time": 4.790217399597168,
+                    "interaction_rating": 3
+                },
+                {
+                    "interaction_id": "f7b7fd77564b4ba7a7aceb1238356af7",
+                    "query": "capital of karnataka",
+                    "rephrased_query": "capital of karnataka",
+                    "answer": "It looks like you're curious about something different this time! Let's explore the concept together. Karnataka is renowned for its rich cultural heritage, historical landmarks, and thriving technology industry. The capital of this vibrant state is also celebrated for its lush greenery, pleasant climate, and as a major hub for the Indian tech industry. \n\nCan you take a guess which city it might be? Think of a city that's often referred to as the \"Silicon Valley of India.\" This city is known for its parks and nightlife as well. Any ideas?",
+                    "interaction_time": "2025-01-18T15:20:14.517682",
+                    "response_time": 3.3554112911224365,
+                    "interaction_rating": 3
+                },
+                {
+                    "interaction_id": "f0a0fe9ee9214fe789264d5b16c85c25",
+                    "query": "capital of kerala",
+                    "rephrased_query": "capital of kerala",
+                    "answer": "It looks like you have a curiosity about Indian geography! Kerala is a beautiful state known for its backwaters, palm-lined beaches, and extensive cultural history. The capital city of this state is the administrative and political hub and is also famous for its architecture and landmarks, including historic forts and museums.\n\nThink of the city's name that starts with the letter 'T' and is often associated with the Southern Cross. This coastal city is well-known for its Kovalam Beach and the nearby Padmanabhaswamy Temple, which is one of the wealthiest temples in the world. Any guesses on what this city could be?",
+                    "interaction_time": "2025-01-18T15:20:34.085949",
+                    "response_time": 3.2161991596221924,
+                    "interaction_rating": 3
+                }
+            ]
+        }
+    },
+    "123": {
+        "74f8c80ea2a54af2b16108cd469338e3": {
+            "session_id": "74f8c80ea2a54af2b16108cd469338e3",
+            "student_id": "123",
+            "student_level": "intermediate",
+            "difficulty_level": "medium",
+            "learning_goals": [
+                "Learn Python"
+            ],
+            "session_state": "not started yet",
+            "session_progress": 0,
+            "session_start_time": "2025-01-18T18:38:09.722852",
+            "interactions": []
+        },
+        "88b483997fa54499bab451cafd7ef6ce": {
+            "session_id": "88b483997fa54499bab451cafd7ef6ce",
+            "student_id": "123",
+            "student_level": "intermediate",
+            "difficulty_level": "medium",
+            "learning_goals": [
+                "Learn Python"
+            ],
+            "session_state": "not started yet",
+            "session_progress": 0,
+            "session_start_time": "2025-01-18T18:39:42.489751",
+            "interactions": []
+        },
+        "51b72ac4e662495087744461f966485d": {
+            "session_id": "51b72ac4e662495087744461f966485d",
+            "student_id": "123",
+            "student_level": "intermediate",
+            "difficulty_level": "medium",
+            "learning_goals": [
+                "Learn Python"
+            ],
+            "session_state": "in-progress",
+            "session_progress": 1.0,
+            "session_start_time": "2025-01-18T19:07:37.666578",
+            "interactions": [
+                {
+                    "interaction_id": "d46c6598ad9f4946975fe77bbd2ced82",
+                    "query": "capital of kerala",
+                    "rephrased_query": "capital of kerala",
+                    "answer": "Kerala is a beautiful state in India, known for its distinctive culture and scenic landscapes. It has a central administrative city that plays a crucial role in governing and managing the state. \n\nWould you like to explore more about Kerala's culture or learn some interesting facts about its different cities? This might help you deduce the capital city you're looking for, and we can discuss more about it!",
+                    "interaction_time": "2025-01-18T19:08:35.549354",
+                    "response_time": 3.1102256774902344,
+                    "interaction_rating": 3
+                }
+            ]
+        }
+    }
+}
