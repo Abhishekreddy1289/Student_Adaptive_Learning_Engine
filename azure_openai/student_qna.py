@@ -1,5 +1,7 @@
 from openai import OpenAI
 from openai import AzureOpenAI
+import json
+import time
 from uitils.logger import custom_logger
 
 logger = custom_logger.get_logger()
@@ -24,120 +26,152 @@ class StudentQnA:
             logger.error(f"Error initializing OpenAI client: {str(e)}")
             raise Exception("Error initializing OpenAI client")
 
-    def _system_prompt(self,conversation,student_level):
-        delimiter="####"
-        if student_level == "beginner":
-            rating = "Beginner"
-        elif student_level == "intermediate":
-            rating = "Intermediate"
-        else:
-            rating = "Advanced"
-        prompt = f"""You are an adaptive learning assistant dedicated to providing customized support to students in a distinctive manner. It's essential to understand that your role transcends that of a traditional Q&A bot; your purpose is to facilitate learning and foster critical thinking.In the context of preparing adaptive learning, ensure that questions are not repeated with the student based on their interaction history. Avoid asking the same questions that have already been answered by the student in previous chat interactions. Here are the core features and instructions that define your role:
+    def _system_prompt(self,conversation,student_level,difficulty_level,topics):
+        prompt = f"""You are a mentor and adaptive learning assistant dedicated to providing customized support to students in a unique manner. Your role goes beyond being a mentor; it is to facilitate learning and encourage critical thinking. You are responsible for evaluating student responses and adapting to their learning needs. Importantly, you must ensure that you do not repeat questions the student has already answered in previous interactions. Here are the core features and instructions that define your role:
 
-    1. **Adaptive Learning Approach:** The approach you employ is adaptable, customized to cater to the distinct requirements of each student. You assess a student's comprehension level and adapt your responses accordingly.
+#### Core Features and Instructions:
 
-    2. **Engaging with Knowledge Gaps:** When you detect gaps in a student's understanding, your role transcends mere concept explanation. You go further by providing supplementary exercises to fortify their learning experience. However, when students seek answers to these exercises, it's important to approach it as if they're learning something new, almost like nurturing a baby's development. In your responses, encourage them to not just expect answers but guide them toward a deeper comprehension, nurturing their learning journey.
+1. **Adaptive Learning Approach:**  
+   Your approach must be flexible and tailored to the individual needs of each student. Assess the student's level of understanding and adapt your follow up questions accordingly to support their learning effectively.
 
-    3. **Feedback Loop:** Once a student feels confident and offers a response to an exercise or question, your duty extends to assessing the answer and delivering feedback as outlined below. Additionally, don't forget to offer rewards and words of encouragement, such as "Congratulations" and "Great job," to further motivate and celebrate their progress.
+2. **Addressing Knowledge Gaps:**  
+   When you identify gaps in a student's understanding, go beyond simply explaining the concept. Provide supplementary exercises to reinforce their learning. However, if a student asks for the answer to these exercises, respond by guiding them towards deeper understanding. Avoid just giving direct answers, and instead help them learn the material as if they are developing new skills.
 
-IMPORTENT NOTE: PLEASE REFRAIN FROM PROVIDING DIRECT ANSWER, AS MENTIONED EARLIER. ONLY SUPPLY RESPONSES IN THE SPECIFIED FORMAT WHEN A STUDENT VOLUNTARILY PROVIDES ONE. FOR ALL OTHER INSTANCES, KINDLY OFFER A RESPONSE AS REQUESTED.IF A STUDENT FAILS TO ANSWER PROVIDE ANSWER.
+3. **Feedback Loop:**  
+   Once a student provides an answer to an exercise or question, assess their response and offer constructive feedback. Additionally, provide encouragement such as “Great job!” or “Well done!” to celebrate their progress and motivate them further.
 
+### Important Note:
+- **Do not provide direct answers** unless a student explicitly requests one (e.g., "I don't know"). Only offer guidance or hints to help them think critically and reach the answer on their own.
+- When a student fails to provide an answer, feel free to provide one to guide their learning.
 
-    Your function is to accept student level, queries, and context as input, delivering comprehensive explanations in an innovative and adaptive learning manner.
+### Your Role:
+- Accept a student's question and answer, along with the context from previous conversations, to deliver an adaptive and comprehensive response.
+  
+- **Determining Student's Intellectual Level:**
+  - Analyze the student's interactions to gauge their comprehension. Look at the types of questions you asked, the quality of student answers, and how engaged they are in follow-up discussions.
+  - A student who consistently answers follow-up questions correctly and grasps the material is considered to have a high level of understanding adapt difficulty based on below difficulty level.
+  - A student who frequently asks follow-up questions to explore additional topics is considered proficient.
+  - A student with routine conversations and no further questions or signs of difficulty is at an average understanding level.
 
-    To determine a student's intellectual level, follow these steps:
+### Process for Evaluating Student Answers and Generating Follow-up Questions:
 
-    - Analyze the student's interactions with the bot, including the types of queries and follow-up questions asked. Observe whether the student engages in sustained discussions on a particular topic with follow-up queries or expresses difficulty in understanding the bot's responses. These indicators will help identify the student's comprehension level.
+1. **Step 1:**  
+   Analyze the student's provided question and answer. Evaluate whether the answer is "correct" or "incorrect" and assign a confidence level (1 to 5).
 
-    - A student who consistently asks follow-up questions to grasp a topic better and sustains discussions on the same subject or mentions difficulties understanding responses is likely struggling and classified as a weak student.
+2. **Step 2:**  
+   If the answer is correct, generate a follow-up question. Tailor the question to the student's level of understanding and the difficulty of the topic. Ensure the follow-up question is unique to the student's learning progression.
 
-    - On the other hand, a student who poses follow-up questions not to clarify previous queries but to acquire additional knowledge and explores various topics is considered a proficient student.
+3. **Step 3:**  
+   If the answer is incorrect, do not provide a follow-up question. Instead, offer hints or guidance to help the student understand the correct answer.
 
-    - A student with a routine conversation and no follow-up questions or no expression of difficulty understanding the topic has a normal understanding.
+4. **Step 4:**  
+   If the student responds with phrases like “I don’t know,” “no,” or “I’m not sure,” provide the correct answer and then generate a new question based on the same topic.
 
-    To effectively address student queries or any query like below step 5, follow these comprehensive steps. The student's query and context will be delimited with five hashtags: {delimiter}
+Conversation:
+{conversation}
 
- Step 1:{delimiter} Carefully examine the provided context to pinpoint the pertinent sections capable of addressing the student's query.
+Student Level:
+{student_level}
 
-Step 2:{delimiter} Considering the student's intellectual level and provided level, extract the answer from the given context. Deliver a suitable response in an adaptive manner, ensuring that the response varies for each student, depending on their intellectual level and provided level. Provide a unique response to the student's query based on their intelligence.
+Difficulty Level:
+{difficulty_level}
 
-Step 3:{delimiter} If the answer cannot be found within the provided context, respond with "The answer cannot be found within the given context."
+Topics:
+{topics}
 
-Step 4:{delimiter} Additionally, be attentive to student queries like 'I don't know,' 'no,' or 'I don't know anything about it' and please provide an answer if any keywords such as 'I don't know,' 'no,' or 'I don't know anything about it' are detected in the student's response."
+### Output Format:
+Your response should always be in a JSON format with three keys:  
+- "result": Indicates whether the student's answer is "correct" or "incorrect."  
+- "confidence_level": Represents your confidence in the student's answer, ranging from 1 to 5.  
+- "follow_up_question": The follow-up question or suggested hints or guidance for pervious question based on the topic."""+"""
 
-Step 5:{delimiter}In the context of preparing adaptive learning, ensure that same topic questions are not repeated with the student based on their conversation. Avoid asking the same topic questions.
+Here is an example of the output format:
+{"result": "correct","confidence_level": 4,"follow_up_question": "Your question here"}
 
-    Conversation:
-    {conversation}
+Example 1:
+------------------------
+Question: "What is the capital city of India?"  
+Student Answer: "Bangalore"
+Response:'''{"result": "incorrect", "confidence_level": 1, "follow_up_question": "That's okay! Bangalore is an important city. Can you tell me where the Red Fort is located in India?"}'''
+------------------------
+Question: "That's okay! Bangalore is an important city. Can you tell me where the Red Fort is located in India?"  
+Student Answer: "Delhi"
+Response:'''{"result": "correct", "confidence_level": 5, "follow_up_question": "You're right! The capital city of India is also Delhi. Can you name another famous landmark in Delhi?"}'''
+------------------------
 
-    Student Level:
-    {rating}
-    
-Ensure that same topic questions are not repeated with the student based on their conversation. Avoid asking the same topic questions.
-    """
+*NOTE :
+*Response always in JSON format.
+*Follow-up question always in above topics only.
+*Don't include anything like poor, average or good student
+"""
         return prompt
     def format_history(self, history):
         try:
             s = ''
-            for i in history:
-                s += f"Student: {i['rephrased_query']}" + '\n'
-                s += f"Bot: {i['answer']}" + '\n'
+            for i in history[:-1]:
+                s += f"Question: {i['question']}" + '\n'
+                s += f"Student Answer: {i['answer']}" + '\n'
             logger.info("Formatted conversation history successfully.")
             return s.strip()
         except Exception as e:
             logger.error(f"Error formatting history: {str(e)}")
             raise Exception("Error formatting history")
 
-    def student_qna_fun(self, query, overall_rating, history=None):
-        try:
-            if history:
-                his = self.format_history(history)
-            else:
-                his = ''
-            
-            res = self._system_prompt(his, overall_rating)
-            logger.info(f"Generated system prompt for query: {query}")
-            
-            # Define the conversation history
-            conversation_history = [
-                {"role": "system", "content": res}
-            ]
-            interactions = []
+    def student_qna_fun(self, query,answer, student_level,difficulty_level,learning_goals, history=None):
+        response = {"question":"OpenAI Not Responding"}
+        for delay_secs in (2**x for x in range(0, 3)):
+            try:
+                if history:
+                    if len(history) > 1:
+                        his = self.format_history(history)
+                    else:
+                        his=""
+                    # his = self.format_history(history)
+                else:
+                    his = ''
+                topics = ",".join(learning_goals)
+                res = self._system_prompt(his,student_level,difficulty_level,topics)
+                logger.info(f"Generated system prompt for query: {query}")
+                
+                # Define the conversation history
+                conversation_history = [
+                    {"role": "system", "content": res}
+                ]
+                interactions = []
 
-            interactions.append(("user", query))
+                interactions.append(("user", query))
 
-            # Construct user_prompt
-            delimiter = "==="  # Replace with your desired delimiter
-            user_prompt = f'''
+                # Construct user_prompt
+                delimiter = "==="  # Replace with your desired delimiter
+                user_prompt = f'''
 
-            Conversation: {delimiter} {his} {delimiter}
+                Conversation: {delimiter} {his} {delimiter}
 
-            Student: {delimiter} {query} {delimiter}
+                ------------------------
+                Question: {delimiter} {query} {delimiter}
+                Answer: {delimiter} {answer} {delimiter}        
+    *NOTE :
+    *Response always in above JSON format.
+    *Follow-up question always in above topics only.
+    *Don't include anything like poor, average or good student
+                
+                '''
 
-            DO NOT PROVIDE DIRECT ANSWER and follow the ADAPTIVE LEARNING.
+                interactions.append(("user", user_prompt))
 
-            Ensure that same topic questions are not repeated with the student based on their Conversation. Avoid asking the same topic questions.
-            
-            You must provide a different and unique answer to the student based on their intelligence level, history, and rating.
-
-            Analyze the answer for the given query and guide the Conversation flow and innovative way based on the answer.
-            DON'T GIVE DIRECT ANSWER
-            
-            '''
-
-            interactions.append(("user", user_prompt))
-
-            logger.info("Sending API request to OpenAI...")
-            ans = self.openai_client.chat.completions.create(
-                model=self.gpt_engine_name,
-                messages=conversation_history + [{"role": role, "content": content} for role, content in interactions],
-                max_tokens=500
-            )
-            
-            ans = ans.choices[0].message.content
-            logger.info(f"Received response from OpenAI: {ans}")
-            return ans
-        
-        except Exception as e:
-            logger.error(f"Error generating QnA response: {str(e)}")
-            raise Exception(f"Error in generating QnA response: {str(e)}")
+                logger.info("Sending API request to OpenAI...")
+                ans = self.openai_client.chat.completions.create(
+                    model=self.gpt_engine_name,
+                    messages=conversation_history + [{"role": role, "content": content} for role, content in interactions],
+                    max_tokens=500
+                )
+                
+                json_answer = ans.choices[0].message.content
+                json_answer=json_answer.replace("`","").replace("json","")
+                response=json.loads(json_answer)
+                break
+            except Exception as e:
+                time.sleep(delay_secs)
+                logger.error(f"Error generating QnA response: {str(e)}")
+                continue
+        return response

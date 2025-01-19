@@ -31,7 +31,7 @@ class SessionManager:
                 logger.info("Sessions data saved successfully.")
         except Exception as e:
             logger.error(f"Error saving sessions to file: {str(e)}")
-
+            
     def insert_session(self, student_id, session_data):
         """Inserts a new session for a student."""
         try:
@@ -56,8 +56,60 @@ class SessionManager:
         except Exception as e:
             logger.error(f"Error inserting session for student {student_id}: {str(e)}")
             return "Please Try After Sometime."
+        
+    def update_interaction(self, student_id, session_id, interaction_id, answer, updated_difficulty_level, student_response_time, confidence_level, result):
+        """Updates an interaction for a student session."""
+        try:
+            sessions = self.load_sessions()
 
-    def update_session(self, student_id, session_id, new_interaction,difficulty_level):
+            # Ensure student and session exist
+            if student_id in sessions and session_id in sessions[student_id]:
+
+                # Locate the specific interaction by interaction_id
+                interactions = sessions[student_id][session_id]["interactions"]
+                interaction_found = False
+                for interaction in interactions:
+                    if interaction["interaction_id"] == interaction_id:
+                        # Update the interaction fields
+                        interaction["answer"] = answer
+                        interaction["answer_time"] = student_response_time  # Assuming answer_time is student_response_time
+                        interaction["confidence_level"] = confidence_level
+                        interaction["correct_answer"] = result  # Assuming 'correct_answer' stores the result (or another field)
+
+                        interaction_found = True
+                        logger.info(f"Interaction {interaction_id} updated for session {session_id} of student {student_id}.")
+                        break
+
+                if not interaction_found:
+                    logger.warning(f"Interaction with ID {interaction_id} not found for session {session_id} of student {student_id}.")
+                    return "Interaction ID not found."
+
+                # Recalculate session progress and state
+                history = sessions[student_id][session_id]["interactions"]
+                session_progress = (len(history) / 100) * 100 if len(history) < 100 else 100
+                session_state = "completed" if len(history) >= 100 else "in-progress"
+
+                # Update the session details
+                sessions[student_id][session_id]["difficulty_level"] = updated_difficulty_level
+                sessions[student_id][session_id]["session_progress"] = session_progress
+                sessions[student_id][session_id]["session_state"] = session_state
+
+                logger.info(f"Session {session_id} for student {student_id} updated with new progress and state.")
+            
+            else:
+                logger.warning(f"Session {session_id} for student {student_id} does not exist.")
+                return "Session or student does not exist."
+
+            # Save the updated sessions data
+            self.save_sessions(sessions)
+            return "Updated successfully. 🙂"
+
+        except Exception as e:
+            logger.error(f"Error updating interaction for student {student_id}, session {session_id}: {str(e)}")
+            return "Please try again later. 😞"
+
+
+    def update_session(self, student_id, session_id, new_interaction):
         """Updates an existing session with a new interaction."""
         try:
             sessions = self.load_sessions()
@@ -69,23 +121,6 @@ class SessionManager:
             else:
                 logger.warning(f"Session {session_id} for student {student_id} does not exist.")
             
-            # Calculate session progress and state
-            if session_id in sessions[student_id]:
-                history = sessions[student_id][session_id]["interactions"]
-                if len(history) > 0 and len(history) < 100:
-                    session_progress = (len(history) / 100) * 100
-                    session_state = "in-progress"
-                else:
-                    session_progress = 100
-                    session_state = "completed"
-
-                # Update the difficulty level
-                sessions[student_id][session_id]["difficulty_level"] = difficulty_level
-                sessions[student_id][session_id]["session_progress"] = session_progress
-                sessions[student_id][session_id]["session_state"] = session_state
-                logger.info(f"Difficulty level updated for session {session_id} for student {student_id}.")
-            else:
-                logger.warning(f"Session {session_id} for student {student_id} does not exist.")
             # Save updated sessions
             self.save_sessions(sessions)
         except Exception as e:
@@ -120,15 +155,72 @@ class SessionManager:
                 number_of_interactions = len(history)
                 
                 try:
+                    avg_confidence_level = statistics.mean([rating["confidence_level"] for rating in history])
+                except:
+                    avg_confidence_level = 0
+                
+                try:
+                    avg_answer_time = statistics.mean([res["answer_time"] for res in history])
+                except:
+                    avg_answer_time = 0
+                
+                response = {
+                    "session_state": session_state,
+                    "session_progress": session_progress,
+                    "number_of_interactions": number_of_interactions,
+                    "difficulty_level": difficulty_level,
+                    "student_level": student_level,
+                    "avg_confidence_level": avg_confidence_level,
+                    "avg_answer_time": avg_answer_time,
+                    "learning_goals": learning_goals,
+                    "interactions":history
+                }
+                logger.info(f"Retrieved detailed session information for session {session_id} of student {student_id}.")
+                return response
+        except Exception as e:
+            logger.error(f"Error retrieving session details for student {student_id}, session {session_id}: {str(e)}")
+            return None
+        
+    def interaction_details(self, student_id, session_id, interaction_id):
+        """Get detailed session information for a specific student."""
+        try:
+            sessions = self.load_sessions()
+            # Check if the student exists in the sessions data
+            if student_id not in sessions:
+                print(f"Student {student_id} not found, adding to sessions.")  # Debug print
+                sessions[student_id] = {}
+            
+            # If the session exists, return session details
+            if session_id in sessions[student_id]:
+                history = sessions[student_id][session_id]["interactions"]
+                session_progress = sessions[student_id][session_id]["session_progress"]
+                session_state = sessions[student_id][session_id]["session_state"]
+                difficulty_level = sessions[student_id][session_id]["difficulty_level"]
+                student_level = sessions[student_id][session_id]["student_level"]
+                learning_goals = sessions[student_id][session_id]["learning_goals"]
+                number_of_interactions = len(history)
+                # interaction_details = sessions[student_id][session_id]["interactions"][interaction_id]
+                # print(f"Interaction details: {interaction_details}")  # Debug print
+                
+                try:
                     avg_student_rating = statistics.mean([rating["interaction_rating"] for rating in history])
                 except:
                     avg_student_rating = 0
-                
+
                 try:
                     avg_response_time = statistics.mean([res["response_time"] for res in history])
                 except:
                     avg_response_time = 0
                 
+                # Find the interaction with the matching interaction_id
+                interaction_details = next(
+                    (interaction for interaction in history if interaction["interaction_id"] == interaction_id),
+                    None
+                )
+
+                if interaction_details is None:
+                    raise ValueError(f"Interaction with ID {interaction_id} not found.")
+
                 response = {
                     "session_state": session_state,
                     "session_progress": session_progress,
@@ -138,10 +230,12 @@ class SessionManager:
                     "avg_student_rating": avg_student_rating,
                     "avg_response_time": avg_response_time,
                     "learning_goals": learning_goals,
-                    "interactions":history
+                    "interactions": history,
+                    "interaction_details":interaction_details
                 }
                 logger.info(f"Retrieved detailed session information for session {session_id} of student {student_id}.")
                 return response
+
         except Exception as e:
             logger.error(f"Error retrieving session details for student {student_id}, session {session_id}: {str(e)}")
             return None

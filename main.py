@@ -5,10 +5,8 @@ import uuid
 import time
 import datetime
 from uitils.session import SessionManager
-from azure_openai.validate import Validate
-from azure_openai.repharse import Rephrase
 from azure_openai.student_qna import StudentQnA
-from azure_openai.validate import Validate
+from uitils.uitil import Uitils
 from azure_openai.recommendations import RecommendationsQuestions
 from uitils.logger import custom_logger
 from config import gpt4_model,api_key,api_version,openai_type,azure_endpoint
@@ -16,11 +14,9 @@ from config import gpt4_model,api_key,api_version,openai_type,azure_endpoint
 app = FastAPI()
 
 session_manager=SessionManager('student_sessions.json')
-validate_response=Validate(gpt4_model, api_key, azure_endpoint, api_version, openai_type)
-rephrase_query=Rephrase(gpt4_model, api_key, azure_endpoint, api_version, openai_type)
 student_inter=StudentQnA(gpt4_model, api_key, azure_endpoint, api_version, openai_type)
-validate_score=Validate(gpt4_model, api_key, azure_endpoint, api_version, openai_type)
 recommend_question=RecommendationsQuestions(gpt4_model, api_key, azure_endpoint, api_version, openai_type)
+adapt_difficult_obj=Uitils()
 logger = custom_logger.get_logger()
 
 class LearningSession(BaseModel):
@@ -35,7 +31,8 @@ class LearningSession(BaseModel):
         return value
 
 class InteractionRequest(BaseModel):
-    query: str
+    interaction_id:str
+    answer: str
 
 @app.post("/sessions")
 async def create_session(session: LearningSession):
@@ -61,7 +58,17 @@ async def create_session(session: LearningSession):
         else:
             logger.error(f"Invalid student level received: {student_level}")
             raise HTTPException(status_code=400, detail="Invalid student level")
-        
+        random_uuid = uuid.uuid4()
+        interaction_id = random_uuid.hex
+        recom_question=recommend_question.recommend_question(learning_goals, student_level,difficulty_level,[])
+        first_question=[{"interaction_id": interaction_id,
+                "question": recom_question["question"],
+                "answer": "",
+                "answer_time": 0,
+                "query_time": datetime.datetime.now().isoformat(),
+                "correct_answer":"not answered",
+                "confidence_level":0
+                }]
         session_data_1 = {
             "session_id": session_id,
             "student_id": student_id,
@@ -71,7 +78,7 @@ async def create_session(session: LearningSession):
             "session_state": "not started yet",
             "session_progress": 0,
             "session_start_time": datetime.datetime.now().isoformat(),
-            "interactions": []
+            "interactions": first_question
         }
         
         logger.info(f"Session data prepared for student {student_id} with session ID {session_id}")
@@ -80,7 +87,7 @@ async def create_session(session: LearningSession):
         # Log the successful session creation
         logger.info(f"Session successfully created with session ID {session_id} for student {student_id}")
         
-        return {"message": response, "session_id": session_id}
+        return {"message": response, "session_id": session_id,"interaction_id": interaction_id,"question": recom_question["question"],}
 
     except Exception as e:
         # Log the error if something goes wrong
@@ -90,75 +97,51 @@ async def create_session(session: LearningSession):
 @app.post("/sessions/{student_id}/{session_id}/interactions")
 async def track_interaction(student_id: str, session_id: str, request: InteractionRequest):
     try:
-        logger.info(f"Received request to track interaction for student_id: {student_id}, session_id: {session_id}")
-        
         session = session_manager.get_session(student_id, session_id)
         if not session:
             logger.warning(f"Session not found for student_id: {student_id}, session_id: {session_id}")
             raise HTTPException(status_code=404, detail="Session not found")
-        
+        answer_time=datetime.datetime.now().isoformat()
         logger.debug(f"Session found for student_id: {student_id}, session_id: {session_id}")
-        s_time = time.time()
         try:
-            rephrase_q = rephrase_query.followup_query(request.query)
-            logger.debug(f"Rephrased query: {rephrase_q}")
-        except Exception as e:
-            logger.error(f"Error while rephrasing query: {str(e)}")
-            raise HTTPException(status_code=500, detail="Error processing the query")
-
-        try:
-            session_res=session_manager.session_details(student_id, session_id)
-            # history, student_level, difficulty_level = session_manager.read_history(student_id, session_id)
+            interaction_q=session_manager.interaction_details(student_id, session_id,request.interaction_id)
+            
             logger.debug(f"Session history read successfully for student_id: {student_id}, session_id: {session_id}")
         except Exception as e:
             logger.error(f"Error while reading history for student_id: {student_id}, session_id: {session_id}: {str(e)}")
             raise HTTPException(status_code=500, detail="Error retrieving session history")
         
-        logger.debug(f"Current difficulty level: {session_res["difficulty_level"]}")
+        logger.debug(f"Current difficulty level: {interaction_q["difficulty_level"]}")
         try:
-            answer = student_inter.student_qna_fun(rephrase_q, session_res["student_level"], session_res["interactions"])
-            logger.debug(f"Answer generated: {answer}")
+            response = student_inter.student_qna_fun(interaction_q["interaction_details"]["question"],request.answer, interaction_q["student_level"],interaction_q["difficulty_level"],interaction_q["learning_goals"], interaction_q["interactions"])
+            logger.debug(f"Answer generated: {response}")
+            updated_difficulty_level=adapt_difficult_obj.adapt_difficulty(response["confidence_level"], interaction_q["difficulty_level"])
         except Exception as e:
             logger.error(f"Error during Q&A processing for student_id: {student_id}, session_id: {session_id}: {str(e)}")
             raise HTTPException(status_code=500, detail="Error during Q&A processing")
+        
+        try:
+            student_response_time=adapt_difficult_obj.calculate_time_difference_in_minutes(answer_time,interaction_q["interaction_details"]["query_time"])
 
-        end_time = time.time() - s_time
-        logger.debug(f"Interaction processed in {end_time:.2f} seconds")
-        
-        try:
-            interaction_score = validate_score.student_score(rephrase_q, answer, session_res["interactions"])
-            logger.debug(f"Interaction score calculated: {interaction_score}")
-        except Exception as e:
-            logger.error(f"Error during interaction scoring for student_id: {student_id}, session_id: {session_id}: {str(e)}")
-            raise HTTPException(status_code=500, detail="Error during interaction scoring")
-        
-        try:
-            difficulty_level = validate_score.adapt_difficulty(interaction_score, {session_res["difficulty_level"]})
-            logger.debug(f"Updated difficulty level: {difficulty_level}")
-        except Exception as e:
-            logger.error(f"Error during difficulty level adaptation for student_id: {student_id}, session_id: {session_id}: {str(e)}")
-            raise HTTPException(status_code=500, detail="Error adjusting difficulty level")
-        
-        random_uuid = uuid.uuid4()
-        interaction_id = random_uuid.hex
-        logger.debug(f"Generated interaction ID: {interaction_id}")
-        
-        try:
+            session_manager.update_interaction(student_id, session_id,request.interaction_id,request.answer,updated_difficulty_level,student_response_time,response["confidence_level"],response["result"])
+
+            random_uuid = uuid.uuid4()
+            new_interaction_id = random_uuid.hex
             session_manager.update_session(student_id, session_id, {
-                "interaction_id": interaction_id,
-                "query": request.query,
-                "rephrased_query": rephrase_q,
-                "answer": answer,
-                "interaction_time": datetime.datetime.now().isoformat(),
-                "response_time": end_time,
-                "interaction_rating": interaction_score
-            },difficulty_level)
-            logger.info(f"Session updated with interaction_id {interaction_id} for student {student_id}")
+                    "interaction_id": new_interaction_id,
+                    "question": response["follow_up_question"],
+                    "answer": "",
+                    "answer_time":0,
+                    "query_time": datetime.datetime.now().isoformat(),
+                    "correct_answer": "not answered",
+                    "confidence_level": 0
+                })
+        
         except Exception as e:
             logger.error(f"Error updating session for student_id: {student_id}, session_id: {session_id}: {str(e)}")
             raise HTTPException(status_code=500, detail="Error updating session")
         
-        return {"message": {"interaction_id": interaction_id, "answer": answer}}
+        return {"message": {"interaction_id": new_interaction_id, "question": response["follow_up_question"]}}
 
     except HTTPException as http_error:
         logger.error(f"HTTP error occurred: {http_error.detail}")
@@ -192,8 +175,8 @@ async def get_session_state(student_id: str, session_id: str):
             "number of interactions": response["number_of_interactions"],
             "difficulty level": response["difficulty_level"],
             "student level": response["student_level"],
-            "avg student rating": response["avg_student_rating"],
-            "avg response time": response["avg_response_time"],
+            "average confidence level": response["avg_confidence_level"],
+            "student average answer time": response["avg_answer_time"],
             "learning goals": response["learning_goals"]
         }
 
@@ -222,9 +205,12 @@ async def get_recommendations(student_id: str, session_id: str):
             raise HTTPException(status_code=500, detail="Error retrieving session details")
         
         try:
-            ans = recommend_question.recommend_questions(
+            #avg_confidence_level,learning_goals, student_level,difficulty_level, history=None
+            ans = recommend_question.recommend_next(
                 learning_goals=response["learning_goals"],
-                rating=response["avg_student_rating"],
+                student_level=response["student_level"],
+                difficulty_level=response["difficulty_level"],
+                avg_confidence_level=response["avg_confidence_level"],
                 history=response["interactions"]
             )
             logger.debug(f"Recommendations generated for student_id: {student_id}, session_id: {session_id}")

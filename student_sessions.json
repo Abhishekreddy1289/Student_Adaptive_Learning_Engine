@@ -1,95 +1,93 @@
 {
-    "124": {
-        "b7a4f359e09e4a6ea6f691e4b748d932": {
-            "session_id": "b7a4f359e09e4a6ea6f691e4b748d932",
-            "student_id": "124",
+    "123": {
+        "4b7493aeb1c546dc8a423abe7f6267eb": {
+            "session_id": "4b7493aeb1c546dc8a423abe7f6267eb",
+            "student_id": "123",
             "student_level": "intermediate",
             "difficulty_level": "medium",
             "learning_goals": [
-                "Learn Python",
-                "Understand FastAPI"
+                "Learn Python"
+            ],
+            "session_state": "in-progress",
+            "session_progress": 2.0,
+            "session_start_time": "2025-01-19T16:56:48.574751",
+            "interactions": [
+                {
+                    "interaction_id": "3ed9c1c4e92946b3a863abf55151c4f2",
+                    "question": "What are list comprehensions in Python and how do they differ from using traditional loops to create lists? Can you provide an example?",
+                    "answer": "List comprehensions in Python provide a concise way to create lists by embedding an expression within brackets. They are more compact and readable compared to traditional for-loops, which require more lines of code.",
+                    "answer_time": 178.5852632,
+                    "query_time": "2025-01-19T16:56:48.574751",
+                    "correct_answer": "correct",
+                    "confidence_level": 4
+                },
+                {
+                    "interaction_id": "3877a629615a427780c0e9dc2da1c36d",
+                    "question": "Great job! Could you give me an example of a list comprehension that creates a list of squares of numbers from 1 to 5?",
+                    "answer": "don't know",
+                    "answer_time": 0.9685339333333334,
+                    "query_time": "2025-01-19T19:55:25.570067",
+                    "correct_answer": "incorrect",
+                    "confidence_level": 1
+                },
+                {
+                    "interaction_id": "ea9c9addc7ee44a8a962dfe754c6e499",
+                    "question": "No problem! Here is an example of a list comprehension: [x**2 for x in range(1, 6)]. This creates a list of squares of numbers from 1 to 5. Can you try creating a list comprehension to generate a list of even numbers between 1 and 10?",
+                    "answer": "",
+                    "answer_time": 0,
+                    "query_time": "2025-01-19T19:56:25.830205",
+                    "correct_answer": "not answered",
+                    "confidence_level": 0
+                }
+            ]
+        },
+        "7083c26e8c4140a5b0ce7487a3b6241d": {
+            "session_id": "7083c26e8c4140a5b0ce7487a3b6241d",
+            "student_id": "123",
+            "student_level": "intermediate",
+            "difficulty_level": "easy",
+            "learning_goals": [
+                "Physics Basics"
             ],
             "session_state": "in-progress",
             "session_progress": 3.0,
-            "session_start_time": "2025-01-18T15:08:31.134009",
+            "session_start_time": "2025-01-19T20:55:56.854646",
             "interactions": [
                 {
-                    "interaction_id": "52d91d9612974e90b682facb3cdac83e",
-                    "query": "1. In Python, what is the difference between a list and a tuple? Provide an example of when you would choose a tuple over a list.",
-                    "rephrased_query": "In Python, what is the difference between a list and a tuple? Provide an example of when you would choose a tuple over a list.",
-                    "answer": "\nIt looks like you've encountered an interesting question about lists and tuples in Python. Since you're at an intermediate level, let's dive deeper into how these data structures work and their use cases.\n\nConsider how you might build a recipe book. Would you prefer to use a list (which allows for modifications, additions, and deletions of recipes) or a tuple (which is immutable and allows for original data integrity)?\n\nImagine you've decided to create a draft list of recipes you want to try out; it makes sense to use a list here because you might want to add or remove recipes:\n\n```python\nrecipe_list = [\"Pasta\", \"Sushi\", \"Hamburger\"]\n```\n\nHowever, once you finalize your special collection of family secret recipes, where no changes should be allowed, you might want to use a tuple:\n```python\nfinal_recipes = (\"Grandma's Pie\", \"Mom's Lasagna\", \"Dad's BBQ Ribs\")\n```\n\nDo you notice any differences based on this analogy? Can you think about a scenario in your coding projects where immutability (like that of a tuple) would be important?",
-                    "interaction_time": "2025-01-18T15:18:42.189963",
-                    "response_time": 4.790217399597168,
-                    "interaction_rating": 3
+                    "interaction_id": "04e44ed431b3413784200ae396ae2c42",
+                    "question": "Can you explain the difference between scalar and vector quantities in physics, along with two examples for each?",
+                    "answer": "Scalar quantities have only magnitude, like temperature and mass. Vector quantities have both magnitude and direction, like velocity and force. Scalars don\u2019t involve direction, while vectors do.",
+                    "answer_time": 3.000649866666667,
+                    "query_time": "2025-01-19T20:55:56.854646",
+                    "correct_answer": "correct",
+                    "confidence_level": 5
                 },
                 {
-                    "interaction_id": "f7b7fd77564b4ba7a7aceb1238356af7",
-                    "query": "capital of karnataka",
-                    "rephrased_query": "capital of karnataka",
-                    "answer": "It looks like you're curious about something different this time! Let's explore the concept together. Karnataka is renowned for its rich cultural heritage, historical landmarks, and thriving technology industry. The capital of this vibrant state is also celebrated for its lush greenery, pleasant climate, and as a major hub for the Indian tech industry. \n\nCan you take a guess which city it might be? Think of a city that's often referred to as the \"Silicon Valley of India.\" This city is known for its parks and nightlife as well. Any ideas?",
-                    "interaction_time": "2025-01-18T15:20:14.517682",
-                    "response_time": 3.3554112911224365,
-                    "interaction_rating": 3
+                    "interaction_id": "a168dad8b9c34f1aba60504ff9d8f68a",
+                    "question": "Great job! Can you explain how vector addition works and provide an example?",
+                    "answer": "don't know",
+                    "answer_time": 0.8440037333333333,
+                    "query_time": "2025-01-19T20:58:58.202275",
+                    "correct_answer": "incorrect",
+                    "confidence_level": 1
                 },
                 {
-                    "interaction_id": "f0a0fe9ee9214fe789264d5b16c85c25",
-                    "query": "capital of kerala",
-                    "rephrased_query": "capital of kerala",
-                    "answer": "It looks like you have a curiosity about Indian geography! Kerala is a beautiful state known for its backwaters, palm-lined beaches, and extensive cultural history. The capital city of this state is the administrative and political hub and is also famous for its architecture and landmarks, including historic forts and museums.\n\nThink of the city's name that starts with the letter 'T' and is often associated with the Southern Cross. This coastal city is well-known for its Kovalam Beach and the nearby Padmanabhaswamy Temple, which is one of the wealthiest temples in the world. Any guesses on what this city could be?",
-                    "interaction_time": "2025-01-18T15:20:34.085949",
-                    "response_time": 3.2161991596221924,
-                    "interaction_rating": 3
-                }
-            ]
-        }
-    },
-    "123": {
-        "74f8c80ea2a54af2b16108cd469338e3": {
-            "session_id": "74f8c80ea2a54af2b16108cd469338e3",
-            "student_id": "123",
-            "student_level": "intermediate",
-            "difficulty_level": "medium",
-            "learning_goals": [
-                "Learn Python"
-            ],
-            "session_state": "not started yet",
-            "session_progress": 0,
-            "session_start_time": "2025-01-18T18:38:09.722852",
-            "interactions": []
-        },
-        "88b483997fa54499bab451cafd7ef6ce": {
-            "session_id": "88b483997fa54499bab451cafd7ef6ce",
-            "student_id": "123",
-            "student_level": "intermediate",
-            "difficulty_level": "medium",
-            "learning_goals": [
-                "Learn Python"
-            ],
-            "session_state": "not started yet",
-            "session_progress": 0,
-            "session_start_time": "2025-01-18T18:39:42.489751",
-            "interactions": []
-        },
-        "51b72ac4e662495087744461f966485d": {
-            "session_id": "51b72ac4e662495087744461f966485d",
-            "student_id": "123",
-            "student_level": "intermediate",
-            "difficulty_level": "medium",
-            "learning_goals": [
-                "Learn Python"
-            ],
-            "session_state": "in-progress",
-            "session_progress": 1.0,
-            "session_start_time": "2025-01-18T19:07:37.666578",
-            "interactions": [
+                    "interaction_id": "570254d60dc54bceb9d5769a848293e7",
+                    "question": "Vector addition combines two vectors to produce another vector, by adding their corresponding components. For example, if we have two vectors A = (3, 4) and B = (1, 2), we add the corresponding components: A+B = (3+1, 4+2) = (4, 6). Can you try this with vectors C = (5, 7) and D = (2, 4)?",
+                    "answer": "capital city of india",
+                    "answer_time": 0.45130773333333335,
+                    "query_time": "2025-01-19T20:59:51.094689",
+                    "correct_answer": "incorrect",
+                    "confidence_level": 1
+                },
                 {
-                    "interaction_id": "d46c6598ad9f4946975fe77bbd2ced82",
-                    "query": "capital of kerala",
-                    "rephrased_query": "capital of kerala",
-                    "answer": "Kerala is a beautiful state in India, known for its distinctive culture and scenic landscapes. It has a central administrative city that plays a crucial role in governing and managing the state. \n\nWould you like to explore more about Kerala's culture or learn some interesting facts about its different cities? This might help you deduce the capital city you're looking for, and we can discuss more about it!",
-                    "interaction_time": "2025-01-18T19:08:35.549354",
-                    "response_time": 3.1102256774902344,
-                    "interaction_rating": 3
+                    "interaction_id": "97df5619877a4a1b9946ce51a952ad7c",
+                    "question": "The addition of two vectors C = (5, 7) and D = (2, 4) is calculated by adding their corresponding components: (5+2, 7+4). Can you try this again and provide the result?",
+                    "answer": "",
+                    "answer_time": 0,
+                    "query_time": "2025-01-19T21:00:19.980272",
+                    "correct_answer": "not answered",
+                    "confidence_level": 0
                 }
             ]
         }
