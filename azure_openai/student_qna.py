@@ -108,9 +108,14 @@ Response:'''{"result": "correct", "confidence_level": 5, "follow_up_question": "
     def format_history(self, history):
         try:
             s = ''
-            for i in history[:-1]:
-                s += f"Question: {i['question']}" + '\n'
-                s += f"Student Answer: {i['answer']}" + '\n'
+            if len(history) > 5:
+                for i in history[-5:-1]:
+                    s += f"Question: {i['question']}" + '\n'
+                    s += f"Student Answer: {i['answer']}" + '\n'
+            else:
+                for i in history[:-1]:
+                    s += f"Question: {i['question']}" + '\n'
+                    s += f"Student Answer: {i['answer']}" + '\n'
             logger.info("Formatted conversation history successfully.")
             return s.strip()
         except Exception as e:

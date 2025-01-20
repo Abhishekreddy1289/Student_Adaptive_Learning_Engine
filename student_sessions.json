@@ -91,5 +91,62 @@
                 }
             ]
         }
+    },
+    "student1": {
+        "9e034fba551e48cdb2e084024e25efb3": {
+            "session_id": "9e034fba551e48cdb2e084024e25efb3",
+            "student_id": "student1",
+            "student_level": "beginner",
+            "difficulty_level": "easy",
+            "learning_goals": [
+                "Physics Basics"
+            ],
+            "session_state": "not started yet",
+            "session_progress": 0,
+            "session_start_time": "2025-01-20T10:39:31.968764",
+            "interactions": [
+                {
+                    "interaction_id": "caf78fface6a48328937e497b47d3495",
+                    "question": "OpenAI Not Responding",
+                    "answer": "",
+                    "answer_time": 0,
+                    "query_time": "2025-01-20T10:39:31.968764",
+                    "correct_answer": "not answered",
+                    "confidence_level": 0
+                }
+            ]
+        },
+        "fa100828f5a54e4883d0ea2815cdb2bf": {
+            "session_id": "fa100828f5a54e4883d0ea2815cdb2bf",
+            "student_id": "student1",
+            "student_level": "beginner",
+            "difficulty_level": "easy",
+            "learning_goals": [
+                "Physics Basics"
+            ],
+            "session_state": "in-progress",
+            "session_progress": 1.0,
+            "session_start_time": "2025-01-20T10:40:40.975958",
+            "interactions": [
+                {
+                    "interaction_id": "6e465bb32e98432aa7c21b953b8a0dad",
+                    "question": "What is the difference between kinetic energy and potential energy in classical physics?",
+                    "answer": "Kinetic energy is the energy an object has due to its motion. It depends on the object's mass and velocity.",
+                    "answer_time": 4.2282953333333335,
+                    "query_time": "2025-01-20T10:40:40.975958",
+                    "correct_answer": "partially correct",
+                    "confidence_level": 3
+                },
+                {
+                    "interaction_id": "2c207d5d3e174bbeacf458c9f990857a",
+                    "question": "Great start! Kinetic energy indeed depends on mass and velocity. Can you now explain what potential energy is and give an example of a situation where an object has potential energy?",
+                    "answer": "",
+                    "answer_time": 0,
+                    "query_time": "2025-01-20T10:44:56.151370",
+                    "correct_answer": "not answered",
+                    "confidence_level": 0
+                }
+            ]
+        }
     }
 }
