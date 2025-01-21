@@ -1,0 +1,195 @@
+{
+	"info": {
+		"_postman_id": "bd0087c4-bc6e-42e1-b249-e55f1d69fee2",
+		"name": "Student_Chatbot",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32276975"
+	},
+	"item": [
+		{
+			"name": "sessions",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"student_id\": \"student2\",\r\n  \"student_level\": \"beginner\",\r\n  \"learning_goals\": [\"Learning English\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/sessions",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"sessions"
+					]
+				},
+				"description": "Generated from cURL: curl -X 'POST' \\\r\n  'http://127.0.0.1:8000/sessions' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -d '{\r\n  \"student_id\": \"12345\",\r\n  \"student_level\": \"beginner\",\r\n  \"learning_goals\": [\"Learn Python\", \"Understand FastAPI\"]\r\n}'\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "interactions",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"interaction_id\": \"d5ca7c812cf245d998e68a1016e742ca\",\r\n    \"answer\": \"running \"\r\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/sessions/student2/922632997bf2408b904d53900ed662f4/interactions",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"sessions",
+						"student2",
+						"922632997bf2408b904d53900ed662f4",
+						"interactions"
+					]
+				},
+				"description": "Generated from cURL: curl -X 'POST' \\\r\n  'http://<your-api-url>/sessions/<student_id>/<session_id>/interactions' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -d '{\r\n    \"response\": \"<response-text>\"\r\n  }'\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "recommendations",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/sessions/student2/922632997bf2408b904d53900ed662f4/recommendations",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"sessions",
+						"student2",
+						"922632997bf2408b904d53900ed662f4",
+						"recommendations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "session_details",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/sessions/student2/922632997bf2408b904d53900ed662f4",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"sessions",
+						"student2",
+						"922632997bf2408b904d53900ed662f4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sessions/student1",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/analytics/student/student2",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"analytics",
+						"student",
+						"student2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "analytics_aggregate",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/analytics/aggregate",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"analytics",
+						"aggregate"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

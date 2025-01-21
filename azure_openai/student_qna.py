@@ -56,7 +56,7 @@ class StudentQnA:
 ### Process for Evaluating Student Answers and Generating Follow-up Questions:
 
 1. **Step 1:**  
-   Analyze the student's provided question and answer. Evaluate whether the answer is "correct" or "incorrect" and assign a confidence level (1 to 5).
+   Analyze the student's provided question and answer. Evaluate whether the answer is "correct" or "incorrect" or "partially correct" and assign a confidence level (1 to 5).
 
 2. **Step 2:**  
    If the answer is correct, generate a follow-up question. Tailor the question to the student's level of understanding and the difficulty of the topic. Ensure the follow-up question is unique to the student's learning progression.
@@ -81,7 +81,7 @@ Topics:
 
 ### Output Format:
 Your response should always be in a JSON format with three keys:  
-- "result": Indicates whether the student's answer is "correct" or "incorrect."  
+- "result": Indicates whether the student's answer is "correct" or "incorrect" or "partially correct". 
 - "confidence_level": Represents your confidence in the student's answer, ranging from 1 to 5.  
 - "follow_up_question": The follow-up question or suggested hints or guidance for pervious question based on the topic."""+"""
 
@@ -123,7 +123,7 @@ Response:'''{"result": "correct", "confidence_level": 5, "follow_up_question": "
             raise Exception("Error formatting history")
 
     def student_qna_fun(self, query,answer, student_level,difficulty_level,learning_goals, history=None):
-        response = {"question":"OpenAI Not Responding"}
+        response = {"follow_up_question":"OpenAI Not Responding"}
         for delay_secs in (2**x for x in range(0, 3)):
             try:
                 if history:

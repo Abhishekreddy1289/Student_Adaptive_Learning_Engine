@@ -31,7 +31,7 @@ class SessionManager:
                 logger.info("Sessions data saved successfully.")
         except Exception as e:
             logger.error(f"Error saving sessions to file: {str(e)}")
-            
+
     def insert_session(self, student_id, session_data):
         """Inserts a new session for a student."""
         try:
@@ -62,19 +62,18 @@ class SessionManager:
         try:
             sessions = self.load_sessions()
 
-            # Ensure student and session exist
             if student_id in sessions and session_id in sessions[student_id]:
 
-                # Locate the specific interaction by interaction_id
+                
                 interactions = sessions[student_id][session_id]["interactions"]
                 interaction_found = False
                 for interaction in interactions:
                     if interaction["interaction_id"] == interaction_id:
-                        # Update the interaction fields
+                        
                         interaction["answer"] = answer
-                        interaction["answer_time"] = student_response_time  # Assuming answer_time is student_response_time
+                        interaction["answer_time"] = student_response_time 
                         interaction["confidence_level"] = confidence_level
-                        interaction["correct_answer"] = result  # Assuming 'correct_answer' stores the result (or another field)
+                        interaction["correct_answer"] = result 
 
                         interaction_found = True
                         logger.info(f"Interaction {interaction_id} updated for session {session_id} of student {student_id}.")
@@ -141,10 +140,9 @@ class SessionManager:
         """Get detailed session information for a specific student."""
         try:
             sessions = self.load_sessions()
-            # Check if the student exists in the sessions data
             if student_id not in sessions:
                 sessions[student_id] = {}
-            # If the session exists, return session details
+
             if session_id in sessions[student_id]:
                 history = sessions[student_id][session_id]["interactions"]
                 session_progress = sessions[student_id][session_id]["session_progress"]
@@ -185,12 +183,10 @@ class SessionManager:
         """Get detailed session information for a specific student."""
         try:
             sessions = self.load_sessions()
-            # Check if the student exists in the sessions data
             if student_id not in sessions:
                 print(f"Student {student_id} not found, adding to sessions.")  # Debug print
                 sessions[student_id] = {}
             
-            # If the session exists, return session details
             if session_id in sessions[student_id]:
                 history = sessions[student_id][session_id]["interactions"]
                 session_progress = sessions[student_id][session_id]["session_progress"]
@@ -199,8 +195,6 @@ class SessionManager:
                 student_level = sessions[student_id][session_id]["student_level"]
                 learning_goals = sessions[student_id][session_id]["learning_goals"]
                 number_of_interactions = len(history)
-                # interaction_details = sessions[student_id][session_id]["interactions"][interaction_id]
-                # print(f"Interaction details: {interaction_details}")  # Debug print
                 
                 try:
                     avg_student_rating = statistics.mean([rating["interaction_rating"] for rating in history])
@@ -212,7 +206,6 @@ class SessionManager:
                 except:
                     avg_response_time = 0
                 
-                # Find the interaction with the matching interaction_id
                 interaction_details = next(
                     (interaction for interaction in history if interaction["interaction_id"] == interaction_id),
                     None
@@ -239,3 +232,124 @@ class SessionManager:
         except Exception as e:
             logger.error(f"Error retrieving session details for student {student_id}, session {session_id}: {str(e)}")
             return None
+        
+    def student_details(self, student_id):
+        """Get detailed session information for all sessions of a specific student."""
+        try:
+            sessions = self.load_sessions()
+
+            if student_id not in sessions:
+                logger.warning(f"Student {student_id} not found in sessions data.")
+                return None
+
+            student_sessions = sessions[student_id]
+            all_session_details = []
+
+            for session_id, session_data in student_sessions.items():
+                history = session_data["interactions"]
+                session_progress = session_data["session_progress"]
+                session_state = session_data["session_state"]
+                difficulty_level = session_data["difficulty_level"]
+                student_level = session_data["student_level"]
+                learning_goals = session_data["learning_goals"]
+                number_of_interactions = len(history)
+
+                try:
+                    avg_confidence_level = statistics.mean([rating["confidence_level"] for rating in history])
+                except:
+                    avg_confidence_level = 0
+
+                try:
+                    avg_answer_time = statistics.mean([res["answer_time"] for res in history])
+                except:
+                    avg_answer_time = 0
+
+                session_detail = {
+                    "session_id": session_id,
+                    "session_state": session_state,
+                    "session_progress": session_progress,
+                    "number_of_interactions": number_of_interactions,
+                    "difficulty_level": difficulty_level,
+                    "student_level": student_level,
+                    "avg_confidence_level": avg_confidence_level,
+                    "avg_answer_time": avg_answer_time,
+                    "learning_goals": learning_goals,
+                    "interactions": history
+                }
+                all_session_details.append(session_detail)
+
+            logger.info(f"Retrieved detailed session information for student {student_id}.")
+            return all_session_details
+
+        except Exception as e:
+            logger.error(f"Error retrieving student details for student {student_id}: {str(e)}")
+            return None
+        
+    def all_details(self):
+        """Get detailed session information for all students and their sessions."""
+        try:
+            sessions = self.load_sessions()
+            all_students_details = {}
+
+            for student_id, student_sessions in sessions.items():
+                all_session_details = []
+
+                for session_id, session_data in student_sessions.items():
+                    history = session_data["interactions"]
+                    session_progress = session_data["session_progress"]
+                    session_state = session_data["session_state"]
+                    difficulty_level = session_data["difficulty_level"]
+                    student_level = session_data["student_level"]
+                    learning_goals = session_data["learning_goals"]
+                    number_of_interactions = len(history)
+
+                    try:
+                        avg_confidence_level = statistics.mean([rating["confidence_level"] for rating in history])
+                    except:
+                        avg_confidence_level = 0
+
+                    try:
+                        avg_answer_time = statistics.mean([res["answer_time"] for res in history])
+                    except:
+                        avg_answer_time = 0
+
+                    session_detail = {
+                        "session_id": session_id,
+                        "session_state": session_state,
+                        "session_progress": session_progress,
+                        "number_of_interactions": number_of_interactions,
+                        "difficulty_level": difficulty_level,
+                        "student_level": student_level,
+                        "avg_confidence_level": avg_confidence_level,
+                        "avg_answer_time": avg_answer_time,
+                        "learning_goals": learning_goals,
+                        "interactions": history
+                    }
+                    all_session_details.append(session_detail)
+
+                all_students_details[student_id] = all_session_details
+
+            logger.info("Retrieved detailed session information for all students.")
+            return all_students_details
+
+        except Exception as e:
+            logger.error(f"Error retrieving all session details: {str(e)}")
+            return None
+            
+    def get_all_session_ids(self, student_id):
+        """Retrieve a list of all session IDs for a specific student."""
+        try:
+            sessions = self.load_sessions()
+
+            # Check if the student exists
+            if student_id in sessions:
+                session_ids = list(sessions[student_id].keys())
+                logger.info(f"Retrieved all session IDs for student {student_id}.")
+                return session_ids
+            else:
+                logger.warning(f"Student {student_id} not found in sessions data.")
+                return []  # Return an empty list if the student does not exist
+
+        except Exception as e:
+            logger.error(f"Error retrieving session IDs for student {student_id}: {str(e)}")
+            return []

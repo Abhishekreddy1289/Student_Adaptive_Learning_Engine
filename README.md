@@ -135,7 +135,7 @@ Fetches the current state of a specific learning session, including progress, di
   "number_of_interactions": 5,
   "difficulty_level": "medium",
   "student_level": "beginner",
-  "avg_student_rating": 4.2,
+  "average confidence level": 4.2,
   "avg_response_time": 2.3,
   "learning_goals": ["Improve English"]
 }
@@ -178,8 +178,93 @@ Generates personalized next steps and identifies knowledge gaps for the student 
 
 #### **Usage**:
 This endpoint provides personalized next steps and identifies knowledge gaps based on the student's learning progress, interaction history, and goals. The system helps guide the student to areas where they need improvement, ensuring that their learning journey is optimized for their needs.
+Here's how you can add the API details for `/analytics/student/{student_id}` and `/analytics/aggregate` into the existing README file under a new "Analytics API" section.
 
 ---
+
+## Analytics API
+
+The following endpoints provide analytics for tracking student performance and overall system usage.
+
+### 1. **GET /analytics/student/{student_id}**
+
+#### **Purpose**:
+Retrieves detailed analytics for a specific student, including their session performance, confidence levels, answer accuracy, and mastery of concepts.
+
+#### **Parameters**:
+- **student_id**: The unique identifier of the student for whom analytics is being requested.
+
+#### **Response**:
+```json
+{
+  "total_sessions": 5,
+  "total_interactions": 50,
+  "total_correct_answers": 30,
+  "total_incorrect_answers": 10,
+  "total_partially_correct_answers": 10,
+  "avg_confidence_level": 3.5,
+  "avg_interaction_duration": 45.2,
+  "concept_mastery": {
+    "question_1": 5,
+    "question_2": 3
+  },
+  "misconceptions": {
+    "question_3": 2,
+    "question_4": 1
+  }
+}
+```
+
+- **total_sessions**: The total number of sessions the student has participated in.
+- **total_interactions**: The total number of interactions (questions answered) in all sessions.
+- **total_correct_answers**: The number of correct answers the student provided.
+- **total_incorrect_answers**: The number of incorrect answers the student provided.
+- **total_partially_correct_answers**: The number of partially correct answers the student gave.
+- **avg_confidence_level**: The average confidence level of the student based on their interactions.
+- **avg_interaction_duration**: The average time the student spent answering each question.
+- **concept_mastery**: A dictionary showing the number of correct answers per question, indicating the student’s mastery of those concepts.
+- **misconceptions**: A dictionary showing the number of misconceptions (incorrect answers) per question.
+
+#### **Usage**:
+This endpoint provides in-depth analytics on a student's learning journey. It helps monitor performance in various aspects, such as accuracy, confidence, and mastery of concepts. Use this endpoint to get a detailed overview of a student's progress.
+
+---
+
+### 2. **GET /analytics/aggregate**
+
+#### **Purpose**:
+Retrieves aggregate analytics for all students, summarizing overall system usage, difficulty progression, and common misconceptions across the platform.
+
+#### **Response**:
+```json
+{
+  "number_of_students": 100,
+  "total_sessions": 500,
+  "total_interactions": 5000,
+  "difficulty_progression": {
+    "easy": 200,
+    "medium": 150,
+    "hard": 150
+  },
+  "avg_interaction_duration": 50.2,
+  "avg_confidence_level": 4.0,
+  "common_misconceptions": {
+    "question_1": 50,
+    "question_2": 40
+  }
+}
+```
+
+- **number_of_students**: The total number of students in the system.
+- **total_sessions**: The total number of learning sessions conducted across all students.
+- **total_interactions**: The total number of interactions (questions answered) across all sessions.
+- **difficulty_progression**: A breakdown of the difficulty levels of questions answered across all sessions.
+- **avg_interaction_duration**: The average time students took to answer each question across all sessions.
+- **avg_confidence_level**: The average confidence level across all students for their answers.
+- **common_misconceptions**: A dictionary showing the most common misconceptions, or incorrect answers, for specific questions across all students.
+
+#### **Usage**:
+This endpoint provides an overview of the performance of all students in the system. It aggregates data such as session count, interactions, difficulty progression, and common misconceptions, giving insights into the overall effectiveness of the learning engine.
 
 ## Workflow
 
@@ -195,7 +280,53 @@ This endpoint provides personalized next steps and identifies knowledge gaps bas
 4. **Receive Recommendations**:
    - The system can suggest additional resources, questions, or steps for the student to explore based on their learning history and progress using the `/sessions/{student_id}/{session_id}/recommendations` endpoint. This helps the student continue their learning by addressing knowledge gaps and focusing on the most important areas.
 
----
+5. **View Student Analytics**:
+   - To view detailed analytics for a specific student, use the `/analytics/student/{student_id}` endpoint. This provides insights into the student’s session performance, such as their accuracy, confidence levels, and concept mastery.
+   - This endpoint helps monitor the student's strengths and areas that need improvement, providing valuable information for both students and educators.
+
+6. **View Aggregate Analytics**:
+   - To obtain an overview of the entire system’s performance and student progress, use the `/analytics/aggregate` endpoint. This provides aggregate data on total sessions, interactions, difficulty progression, common misconceptions, and more.
+   - It helps administrators and educators identify trends across all students, such as common misconceptions or areas where students struggle most, to refine the learning process.
+
+
+## Feature Roadmap
+
+The **Feature Roadmap** outlines the planned improvements and updates for the Adaptive Learning Engine, with a focus on enhancing functionality, user engagement, and overall system effectiveness.
+
+### 1. **Data Storage and Management**
+- **Current State**: Currently, data is stored in a standard database like JSON file. While this setup is functional, it lacks the scalability and flexibility needed for real-time performance at scale.
+- **Planned Updates**: Integrate cloud storage accounts (e.g., AWS, Azure, Google Cloud) to manage data more efficiently and scale as necessary. We will implement enhanced data backup and disaster recovery protocols to ensure data integrity and availability.
+
+### 2. **Textbook Context for Question Generation**
+- **Current State**: Currently, OpenAI’s models are used for question generation and answer validation based on knowledge pulled from the AI's own training data.
+- **Planned Updates**: Shift to using textbook-specific content as the primary source for generating questions. OpenAI will be prompted to generate questions based on detailed textbook topics, and answers will be validated by comparing them against the textbook content. This approach will ensure that questions are grounded in established educational materials and that students' answers align with textbook knowledge.
+
+### 3. **Audio Input for Answers**
+- **Current State**: Students currently provide answers via text input. While this is effective, long answers can be time-consuming to input.
+- **Planned Updates**: Introduce audio input functionality to allow students to provide spoken answers. This will streamline the process, especially for lengthy or complex answers, and improve accessibility for students with different preferences or disabilities. We will also implement a speech-to-text engine for real-time transcription and answer validation.
+
+### 4. **Answer Validation Using Evaluation Techniques**
+- **Current State**: Answer validation is performed by comparing student responses with OpenAI’s knowledge base.
+- **Planned Updates**: Implement advanced evaluation techniques, such as precision, recall, and relevance scoring, to assess the quality and accuracy of student responses. This will allow for a more granular and nuanced assessment of answers, ensuring that the system can distinguish between correct, partially correct, and incorrect answers with higher precision.
+
+### 5. **Engagement and Reward System**
+- **Current State**: The system does not currently provide an active engagement mechanism or reward structure to incentivize students.
+- **Planned Updates**: Develop a rewards system that introduces points, levels, and badges for students as they progress through sessions. As students complete tests or challenges, they will earn points or score multipliers. Stickers and other forms of positive reinforcement will be awarded based on performance, boosting motivation and encouraging continued learning. AI will help determine the appropriate rewards based on student performance metrics and achievements.
+
+### 6. **Session Midpoint Engagement**
+- **Current State**: There are no structured engagement checkpoints during sessions.
+- **Planned Updates**: Introduce mid-session assessments and interactive challenges to maintain student engagement. These can take the form of mini-games, quizzes, or other educational activities designed to reinforce learning. The system will assess progress at key points, providing encouragement and rewards for improvement. This feature aims to increase retention and keep students motivated throughout longer sessions.
+
+### 7. **Personalized Learning Paths**
+- **Current State**: Personalized recommendations are already provided, but they are somewhat limited in their ability to dynamically adjust based on ongoing performance.
+- **Planned Updates**: Enhance the recommendation engine to offer fully personalized learning paths. Based on a student's interactions, performance, and learning preferences, the system will dynamically adjust the curriculum. It will suggest new topics, additional resources, and study techniques tailored to the student's needs, ensuring that each learner progresses at their own pace while receiving the necessary support.
+
+### 8. **AI-Driven Conceptual Understanding Tracking**
+- **Current State**: The system tracks basic progress and session completion but does not offer deep insights into conceptual mastery.
+- **Planned Updates**: Develop an AI-driven tracking mechanism that not only monitors session progress but also evaluates how well students grasp individual concepts. This will include tracking the time spent on each concept, identifying areas of struggle, and suggesting targeted interventions for topics that require further attention.
+
+By implementing these features, the system will provide a richer, more interactive, and more efficient learning experience, keeping students engaged and optimizing their educational journey.
+
 
 ## Conclusion
 

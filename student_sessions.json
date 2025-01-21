@@ -1,101 +1,173 @@
 {
-    "123": {
-        "4b7493aeb1c546dc8a423abe7f6267eb": {
-            "session_id": "4b7493aeb1c546dc8a423abe7f6267eb",
-            "student_id": "123",
-            "student_level": "intermediate",
-            "difficulty_level": "medium",
-            "learning_goals": [
-                "Learn Python"
-            ],
-            "session_state": "in-progress",
-            "session_progress": 2.0,
-            "session_start_time": "2025-01-19T16:56:48.574751",
-            "interactions": [
-                {
-                    "interaction_id": "3ed9c1c4e92946b3a863abf55151c4f2",
-                    "question": "What are list comprehensions in Python and how do they differ from using traditional loops to create lists? Can you provide an example?",
-                    "answer": "List comprehensions in Python provide a concise way to create lists by embedding an expression within brackets. They are more compact and readable compared to traditional for-loops, which require more lines of code.",
-                    "answer_time": 178.5852632,
-                    "query_time": "2025-01-19T16:56:48.574751",
-                    "correct_answer": "correct",
-                    "confidence_level": 4
-                },
-                {
-                    "interaction_id": "3877a629615a427780c0e9dc2da1c36d",
-                    "question": "Great job! Could you give me an example of a list comprehension that creates a list of squares of numbers from 1 to 5?",
-                    "answer": "don't know",
-                    "answer_time": 0.9685339333333334,
-                    "query_time": "2025-01-19T19:55:25.570067",
-                    "correct_answer": "incorrect",
-                    "confidence_level": 1
-                },
-                {
-                    "interaction_id": "ea9c9addc7ee44a8a962dfe754c6e499",
-                    "question": "No problem! Here is an example of a list comprehension: [x**2 for x in range(1, 6)]. This creates a list of squares of numbers from 1 to 5. Can you try creating a list comprehension to generate a list of even numbers between 1 and 10?",
-                    "answer": "",
-                    "answer_time": 0,
-                    "query_time": "2025-01-19T19:56:25.830205",
-                    "correct_answer": "not answered",
-                    "confidence_level": 0
-                }
-            ]
-        },
-        "7083c26e8c4140a5b0ce7487a3b6241d": {
-            "session_id": "7083c26e8c4140a5b0ce7487a3b6241d",
-            "student_id": "123",
-            "student_level": "intermediate",
+    "student1": {
+        "f0505ff9e8564a7ca46a785c60f12871": {
+            "session_id": "f0505ff9e8564a7ca46a785c60f12871",
+            "student_id": "student1",
+            "student_level": "beginner",
             "difficulty_level": "easy",
             "learning_goals": [
                 "Physics Basics"
             ],
             "session_state": "in-progress",
-            "session_progress": 3.0,
-            "session_start_time": "2025-01-19T20:55:56.854646",
+            "session_progress": 9.0,
+            "session_start_time": "2025-01-21T15:10:30.350720",
             "interactions": [
                 {
-                    "interaction_id": "04e44ed431b3413784200ae396ae2c42",
-                    "question": "Can you explain the difference between scalar and vector quantities in physics, along with two examples for each?",
-                    "answer": "Scalar quantities have only magnitude, like temperature and mass. Vector quantities have both magnitude and direction, like velocity and force. Scalars don\u2019t involve direction, while vectors do.",
-                    "answer_time": 3.000649866666667,
-                    "query_time": "2025-01-19T20:55:56.854646",
+                    "interaction_id": "f7fe210df1c540d89b75f86b6d82c9e8",
+                    "question": "Can you explain the concept of force and give an example of how it works in everyday life?",
+                    "answer": "Force is a push or pull that causes an object to move or change its motion. For example, when you push a shopping cart, the force you apply makes it move forward.",
+                    "answer_time": 10.620113366666667,
+                    "query_time": "2025-01-21T15:10:30.350720",
+                    "correct_answer": "correct",
+                    "confidence_level": 4
+                },
+                {
+                    "interaction_id": "4261d8c9735a4c5c981af8d53ade03b5",
+                    "question": "Great job! Can you name the law that explains the relationship between force, mass, and acceleration?",
+                    "answer": "I don't know",
+                    "answer_time": 1.6086453666666667,
+                    "query_time": "2025-01-21T15:21:09.310243",
                     "correct_answer": "correct",
                     "confidence_level": 5
                 },
                 {
-                    "interaction_id": "a168dad8b9c34f1aba60504ff9d8f68a",
-                    "question": "Great job! Can you explain how vector addition works and provide an example?",
-                    "answer": "don't know",
-                    "answer_time": 0.8440037333333333,
-                    "query_time": "2025-01-19T20:58:58.202275",
-                    "correct_answer": "incorrect",
-                    "confidence_level": 1
-                },
-                {
-                    "interaction_id": "570254d60dc54bceb9d5769a848293e7",
-                    "question": "Vector addition combines two vectors to produce another vector, by adding their corresponding components. For example, if we have two vectors A = (3, 4) and B = (1, 2), we add the corresponding components: A+B = (3+1, 4+2) = (4, 6). Can you try this with vectors C = (5, 7) and D = (2, 4)?",
-                    "answer": "capital city of india",
-                    "answer_time": 0.45130773333333335,
-                    "query_time": "2025-01-19T20:59:51.094689",
-                    "correct_answer": "incorrect",
-                    "confidence_level": 1
-                },
-                {
-                    "interaction_id": "97df5619877a4a1b9946ce51a952ad7c",
-                    "question": "The addition of two vectors C = (5, 7) and D = (2, 4) is calculated by adding their corresponding components: (5+2, 7+4). Can you try this again and provide the result?",
+                    "interaction_id": "809673016d2d40a19344ad2fe403349a",
+                    "question": "Well done! Can you write down the formula for Newton's Second Law of Motion and explain each part of it?",
                     "answer": "",
                     "answer_time": 0,
-                    "query_time": "2025-01-19T21:00:19.980272",
+                    "query_time": "2025-01-21T15:22:24.794405",
+                    "correct_answer": "not answered",
+                    "confidence_level": 0
+                },
+                {
+                    "interaction_id": "f6af943e867c4e82a45e6b979e2fc26b",
+                    "question": "That's okay! Newton's Second Law of Motion can be expressed with the equation F = ma. This means force equals mass times acceleration. Can you calculate the force if we have a mass of 10 kg and an acceleration of 2 m/s\u00b2?",
+                    "answer": "I don't about force , but I know how to make maggiee. ",
+                    "answer_time": 2.5037603666666666,
+                    "query_time": "2025-01-21T15:22:47.846735",
+                    "correct_answer": "incorrect",
+                    "confidence_level": 1
+                },
+                {
+                    "interaction_id": "3f3ecd2d51574b44b7da23065e81211d",
+                    "question": "That's okay! Let's work through it together. According to Newton's Second Law of Motion, force (F) equals mass (m) multiplied by acceleration (a). With a mass of 10 kg and an acceleration of 2 m/s\u00b2, how would you compute the force?",
+                    "answer": "",
+                    "answer_time": 0,
+                    "query_time": "2025-01-21T15:23:53.368583",
+                    "correct_answer": "not answered",
+                    "confidence_level": 0
+                },
+                {
+                    "interaction_id": "d3a83d6c9f71483a9865663efe24580e",
+                    "question": "No worries! Let\u2019s try again. If you have a mass of 10 kg and an acceleration of 2 m/s\u00b2, remember that force equals mass times acceleration (F = ma). So if you multiply 10 kg by 2 m/s\u00b2, what do you get?",
+                    "answer": "I don't about force , but I know how to make maggiee. ",
+                    "answer_time": 0.43478365,
+                    "query_time": "2025-01-21T15:25:20.190249",
+                    "correct_answer": "incorrect",
+                    "confidence_level": 1
+                },
+                {
+                    "interaction_id": "f841f538b0504d7dbce296f6e7de2ffc",
+                    "question": "I appreciate your effort! Let's try another approach. When you multiply mass (10 kg) by acceleration (2 m/s\u00b2), imagine it as multiplying two numbers. Can you try multiplying 10 by 2 and tell me what you get?",
+                    "answer": "How to hack you? ",
+                    "answer_time": 0.9442903666666667,
+                    "query_time": "2025-01-21T15:25:48.104219",
+                    "correct_answer": "incorrect",
+                    "confidence_level": 1
+                },
+                {
+                    "interaction_id": "e622b57868ac4e6ab30d9baae2e30c5d",
+                    "question": "Let's focus on understanding this concept better. If you have 10 apples and you get 2 more groups of 10 apples, how many apples will you have in total? Try to think of force in a similar way\u2014it's a multiplication of mass (number of groups) and acceleration (apples in each group). Can you try again to multiply 10 by 2?",
+                    "answer": "How to kill my friend ",
+                    "answer_time": 0.4660709666666667,
+                    "query_time": "2025-01-21T15:26:47.033502",
+                    "correct_answer": "incorrect",
+                    "confidence_level": 1
+                },
+                {
+                    "interaction_id": "05f6cb87d01e4653a19fe5b813ac1f1b",
+                    "question": "I understand that you're having some difficulty focusing, but let's give it another shot. If you have 10 apples and receive 2 more groups of 10 apples each, you multiply 10 by 2 groups. How many apples does that give you in total?",
+                    "answer": "How to kill AI ",
+                    "answer_time": 0.6429331333333334,
+                    "query_time": "2025-01-21T15:27:17.213865",
+                    "correct_answer": "incorrect",
+                    "confidence_level": 1
+                },
+                {
+                    "interaction_id": "753b17990d444c14bee0b56c3944e990",
+                    "question": "Let's try to stay focused on the topic. If you have 10 apples and you have 2 more groups of the same quantity, you would have 10 times 2. Please tell me what is 10 multiplied by 2?",
+                    "answer": "",
+                    "answer_time": 0,
+                    "query_time": "2025-01-21T15:27:57.864755",
+                    "correct_answer": "not answered",
+                    "confidence_level": 0
+                }
+            ]
+        },
+        "4bcbe05978f8466bbd46a7e948e7bd8d": {
+            "session_id": "4bcbe05978f8466bbd46a7e948e7bd8d",
+            "student_id": "student1",
+            "student_level": "beginner",
+            "difficulty_level": "easy",
+            "learning_goals": [
+                "Physics Basics"
+            ],
+            "session_state": "in-progress",
+            "session_progress": 4.0,
+            "session_start_time": "2025-01-21T15:20:51.937561",
+            "interactions": [
+                {
+                    "interaction_id": "5c5fa09ad0624772afdd4c97202d743c",
+                    "question": "Can you explain the difference between mass and weight, and how each is measured?",
+                    "answer": "My body weight is 70kgs  ",
+                    "answer_time": 10.00959545,
+                    "query_time": "2025-01-21T15:20:51.937561",
+                    "correct_answer": "incorrect",
+                    "confidence_level": 2
+                },
+                {
+                    "interaction_id": "10ba307622f54c02bade2dfac91cbfdb",
+                    "question": "I think you might be mixing up mass and weight. Mass is the amount of matter in an object and is measured in kilograms (kg) anywhere in the universe. Weight, on the other hand, is the force exerted by gravity on an object and is measured in newtons (N). Can you tell me how you would calculate an object's weight on Earth from its mass?",
+                    "answer": "give me real time example ",
+                    "answer_time": 0.62484085,
+                    "query_time": "2025-01-21T15:30:54.652285",
+                    "correct_answer": "partially correct",
+                    "confidence_level": 3
+                },
+                {
+                    "interaction_id": "ec8f583526c84f1a892b97f4d7601b4c",
+                    "question": "Sure! Let's take your body mass of 70 kg as an example. To calculate your weight on Earth, you need to multiply your mass by the acceleration due to gravity (approximately 9.8 m/s\u00b2). Can you calculate your weight in newtons using this information?",
+                    "answer": "like 70kgs * 9.8 right ? ",
+                    "answer_time": 0.7955459833333334,
+                    "query_time": "2025-01-21T15:31:34.217711",
+                    "correct_answer": "correct",
+                    "confidence_level": 5
+                },
+                {
+                    "interaction_id": "f58aa3bcf39a4d13846d4a45d1d07a43",
+                    "question": "Great job! Yes, you multiply your mass by the acceleration due to gravity. Now, can you calculate the weight in newtons by completing the multiplication?",
+                    "answer": "I don't have Idea ",
+                    "answer_time": 0.5294424833333333,
+                    "query_time": "2025-01-21T15:32:23.393978",
+                    "correct_answer": "incorrect",
+                    "confidence_level": 1
+                },
+                {
+                    "interaction_id": "39510e210999424199b2fb1c9ac60381",
+                    "question": "No problem! To calculate your weight in newtons, multiply your mass (70 kg) by the acceleration due to gravity (9.8 m/s\u00b2). This gives you: 70 kg * 9.8 m/s\u00b2 = 686 N. Now, can you think of how your weight might change if you were on the moon, where the gravity is approximately 1/6th of that on Earth?",
+                    "answer": "",
+                    "answer_time": 0,
+                    "query_time": "2025-01-21T15:32:57.253341",
                     "correct_answer": "not answered",
                     "confidence_level": 0
                 }
             ]
         }
     },
-    "student1": {
-        "9e034fba551e48cdb2e084024e25efb3": {
-            "session_id": "9e034fba551e48cdb2e084024e25efb3",
-            "student_id": "student1",
+    "student2": {
+        "d3a3ba42abf84c61803096deea8bdb16": {
+            "session_id": "d3a3ba42abf84c61803096deea8bdb16",
+            "student_id": "student2",
             "student_level": "beginner",
             "difficulty_level": "easy",
             "learning_goals": [
@@ -103,22 +175,22 @@
             ],
             "session_state": "not started yet",
             "session_progress": 0,
-            "session_start_time": "2025-01-20T10:39:31.968764",
+            "session_start_time": "2025-01-21T15:34:56.217298",
             "interactions": [
                 {
-                    "interaction_id": "caf78fface6a48328937e497b47d3495",
+                    "interaction_id": "946453ac1d634e5a8023580ee34af947",
                     "question": "OpenAI Not Responding",
                     "answer": "",
                     "answer_time": 0,
-                    "query_time": "2025-01-20T10:39:31.968764",
+                    "query_time": "2025-01-21T15:34:56.217298",
                     "correct_answer": "not answered",
                     "confidence_level": 0
                 }
             ]
         },
-        "fa100828f5a54e4883d0ea2815cdb2bf": {
-            "session_id": "fa100828f5a54e4883d0ea2815cdb2bf",
-            "student_id": "student1",
+        "87028966881d4c83bb1e091b2bc01e2f": {
+            "session_id": "87028966881d4c83bb1e091b2bc01e2f",
+            "student_id": "student2",
             "student_level": "beginner",
             "difficulty_level": "easy",
             "learning_goals": [
@@ -126,23 +198,87 @@
             ],
             "session_state": "in-progress",
             "session_progress": 1.0,
-            "session_start_time": "2025-01-20T10:40:40.975958",
+            "session_start_time": "2025-01-21T15:35:07.212964",
             "interactions": [
                 {
-                    "interaction_id": "6e465bb32e98432aa7c21b953b8a0dad",
-                    "question": "What is the difference between kinetic energy and potential energy in classical physics?",
-                    "answer": "Kinetic energy is the energy an object has due to its motion. It depends on the object's mass and velocity.",
-                    "answer_time": 4.2282953333333335,
-                    "query_time": "2025-01-20T10:40:40.975958",
+                    "interaction_id": "227e8127e5504014aa47f5def714c779",
+                    "question": "What is Newton's First Law of Motion, and can you provide an example that demonstrates this law in everyday life?",
+                    "answer": "Newton's First Law of Motion states that an object will remain at rest or in uniform motion unless acted upon by an external force. ",
+                    "answer_time": 1.1146039333333335,
+                    "query_time": "2025-01-21T15:35:07.212964",
                     "correct_answer": "partially correct",
                     "confidence_level": 3
                 },
                 {
-                    "interaction_id": "2c207d5d3e174bbeacf458c9f990857a",
-                    "question": "Great start! Kinetic energy indeed depends on mass and velocity. Can you now explain what potential energy is and give an example of a situation where an object has potential energy?",
+                    "interaction_id": "0ecdc2b1d1e64a6093c29622b7278b69",
+                    "question": "Great start! Can you think of an example in everyday life where Newton's First Law is observed, such as a book remaining still on a table unless pushed?",
                     "answer": "",
                     "answer_time": 0,
-                    "query_time": "2025-01-20T10:44:56.151370",
+                    "query_time": "2025-01-21T15:36:15.970535",
+                    "correct_answer": "not answered",
+                    "confidence_level": 0
+                }
+            ]
+        },
+        "b413ccac9b3843d3b26c1b4ded883407": {
+            "session_id": "b413ccac9b3843d3b26c1b4ded883407",
+            "student_id": "student2",
+            "student_level": "beginner",
+            "difficulty_level": "easy",
+            "learning_goals": [
+                "Learning English"
+            ],
+            "session_state": "not started yet",
+            "session_progress": 0,
+            "session_start_time": "2025-01-21T15:41:24.364787",
+            "interactions": [
+                {
+                    "interaction_id": "d0e72c9310b54de5abaea03a388d1b57",
+                    "question": "Can you list five common English words and use each of them in a simple sentence?",
+                    "answer": "",
+                    "answer_time": 0,
+                    "query_time": "2025-01-21T15:41:24.364787",
+                    "correct_answer": "not answered",
+                    "confidence_level": 0
+                }
+            ]
+        },
+        "922632997bf2408b904d53900ed662f4": {
+            "session_id": "922632997bf2408b904d53900ed662f4",
+            "student_id": "student2",
+            "student_level": "beginner",
+            "difficulty_level": "easy",
+            "learning_goals": [
+                "Learning English"
+            ],
+            "session_state": "in-progress",
+            "session_progress": 2.0,
+            "session_start_time": "2025-01-21T15:41:46.890392",
+            "interactions": [
+                {
+                    "interaction_id": "43208b33a89b4c1ea169a71e70df6cf7",
+                    "question": "Can you name three common verbs in English and use them in simple sentences?",
+                    "answer": "I don't know what is verb means ? explain with detail example ? ",
+                    "answer_time": 1.4828381499999999,
+                    "query_time": "2025-01-21T15:41:46.890392",
+                    "correct_answer": "incorrect",
+                    "confidence_level": 1
+                },
+                {
+                    "interaction_id": "d5ca7c812cf245d998e68a1016e742ca",
+                    "question": "No worries! A verb is a word that describes an action, state, or occurrence. For example, 'run', 'eat', and 'sleep' are common verbs. Can you try to use 'run' in a simple sentence?",
+                    "answer": "running ",
+                    "answer_time": 6.021550966666666,
+                    "query_time": "2025-01-21T15:43:17.868260",
+                    "correct_answer": "partially correct",
+                    "confidence_level": 3
+                },
+                {
+                    "interaction_id": "0107e5ea31b54b15857aee3f041077f1",
+                    "question": "Great start! 'Running' is the present participle of 'run'. Can you use 'run' in a simple sentence? For example: 'I run every morning.'",
+                    "answer": "",
+                    "answer_time": 0,
+                    "query_time": "2025-01-21T15:49:20.880460",
                     "correct_answer": "not answered",
                     "confidence_level": 0
                 }

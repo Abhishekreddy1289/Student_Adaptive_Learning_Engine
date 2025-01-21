@@ -3,6 +3,8 @@ from pydantic import BaseModel, validator
 from typing import List, Dict
 import uuid
 import time
+import numpy as np
+from collections import defaultdict
 import datetime
 from uitils.session import SessionManager
 from azure_openai.student_qna import StudentQnA
@@ -60,35 +62,37 @@ async def create_session(session: LearningSession):
             raise HTTPException(status_code=400, detail="Invalid student level")
         random_uuid = uuid.uuid4()
         interaction_id = random_uuid.hex
-        recom_question=recommend_question.recommend_question(learning_goals, student_level,difficulty_level,[])
-        first_question=[{"interaction_id": interaction_id,
-                "question": recom_question["question"],
-                "answer": "",
-                "answer_time": 0,
-                "query_time": datetime.datetime.now().isoformat(),
-                "correct_answer":"not answered",
-                "confidence_level":0
-                }]
-        session_data_1 = {
-            "session_id": session_id,
-            "student_id": student_id,
-            "student_level": student_level,
-            "difficulty_level": difficulty_level,
-            "learning_goals": learning_goals,
-            "session_state": "not started yet",
-            "session_progress": 0,
-            "session_start_time": datetime.datetime.now().isoformat(),
-            "interactions": first_question
-        }
-        
-        logger.info(f"Session data prepared for student {student_id} with session ID {session_id}")
-        
-        response = session_manager.insert_session(student_id, session_data_1)
-        # Log the successful session creation
-        logger.info(f"Session successfully created with session ID {session_id} for student {student_id}")
-        
-        return {"message": response, "session_id": session_id,"interaction_id": interaction_id,"question": recom_question["question"],}
-
+        recom_question=recommend_question.recommend_question(learning_goals, student_level,difficulty_level,history=None)
+        if recom_question["question"] != "OpenAI Not Responding":
+            first_question=[{"interaction_id": interaction_id,
+                    "question": recom_question["question"],
+                    "answer": "",
+                    "answer_time": 0,
+                    "query_time": datetime.datetime.now().isoformat(),
+                    "correct_answer":"not answered",
+                    "confidence_level":0
+                    }]
+            session_data_1 = {
+                "session_id": session_id,
+                "student_id": student_id,
+                "student_level": student_level,
+                "difficulty_level": difficulty_level,
+                "learning_goals": learning_goals,
+                "session_state": "not started yet",
+                "session_progress": 0,
+                "session_start_time": datetime.datetime.now().isoformat(),
+                "interactions": first_question
+            }
+            
+            logger.info(f"Session data prepared for student {student_id} with session ID {session_id}")
+            
+            response = session_manager.insert_session(student_id, session_data_1)
+            # Log the successful session creation
+            logger.info(f"Session successfully created with session ID {session_id} for student {student_id}")
+            
+            return {"message": response, "session_id": session_id,"interaction_id": interaction_id,"question": recom_question["question"]}
+        logger.error(f"Error occurred while calling OpenAI: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
     except Exception as e:
         # Log the error if something goes wrong
         logger.error(f"Error occurred while creating session: {str(e)}")
@@ -115,14 +119,16 @@ async def track_interaction(student_id: str, session_id: str, request: Interacti
         try:
             response = student_inter.student_qna_fun(interaction_q["interaction_details"]["question"],request.answer, interaction_q["student_level"],interaction_q["difficulty_level"],interaction_q["learning_goals"], interaction_q["interactions"])
             logger.debug(f"Answer generated: {response}")
-            updated_difficulty_level=adapt_difficult_obj.adapt_difficulty(response["confidence_level"], interaction_q["difficulty_level"])
+            if response["follow_up_question"] == "OpenAI Not Responding":
+                logger.error(f"Error during Q&A processing for student_id: {student_id}, session_id: {session_id}: {str(e)}")
+                raise HTTPException(status_code=500, detail="Error during Q&A processing")
         except Exception as e:
             logger.error(f"Error during Q&A processing for student_id: {student_id}, session_id: {session_id}: {str(e)}")
             raise HTTPException(status_code=500, detail="Error during Q&A processing")
         
         try:
+            updated_difficulty_level=adapt_difficult_obj.adapt_difficulty(response["confidence_level"], interaction_q["difficulty_level"])
             student_response_time=adapt_difficult_obj.calculate_time_difference_in_minutes(answer_time,interaction_q["interaction_details"]["query_time"])
-
             session_manager.update_interaction(student_id, session_id,request.interaction_id,request.answer,updated_difficulty_level,student_response_time,response["confidence_level"],response["result"])
 
             random_uuid = uuid.uuid4()
@@ -205,7 +211,7 @@ async def get_recommendations(student_id: str, session_id: str):
             raise HTTPException(status_code=500, detail="Error retrieving session details")
         
         try:
-            #avg_confidence_level,learning_goals, student_level,difficulty_level, history=None
+            
             ans = recommend_question.recommend_next(
                 learning_goals=response["learning_goals"],
                 student_level=response["student_level"],
@@ -225,4 +231,119 @@ async def get_recommendations(student_id: str, session_id: str):
         raise http_error
     except Exception as e:
         logger.error(f"Unexpected error occurred while getting recommendations: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+@app.get("/analytics/student/{student_id}")
+async def get_student_analytics(student_id: str):
+    try:
+        
+        logger.info(f"Retrieving analytics for student {student_id}")
+        
+        student_sessions = session_manager.student_details(student_id)
+        
+        if not student_sessions:
+            logger.warning(f"No sessions found for student {student_id}")
+            raise HTTPException(status_code=404, detail="Student not found or no sessions available")
+        
+        total_sessions = len(student_sessions)
+        total_interactions = sum(len(session["interactions"]) for session in student_sessions)
+        
+        total_correct_answers = sum(1 for session in student_sessions for interaction in session["interactions"] if interaction["correct_answer"] == "correct")
+        total_incorrect_answers = sum(1 for session in student_sessions for interaction in session["interactions"] if interaction["correct_answer"] == "incorrect")
+        total_partially_correct_answers = sum(1 for session in student_sessions for interaction in session["interactions"] if interaction["correct_answer"] == "partially correct")
+        
+        avg_confidence_level = np.mean([interaction["confidence_level"] for session in student_sessions for interaction in session["interactions"]])
+        
+        mastery = defaultdict(int)
+        misconceptions = defaultdict(int)
+        
+        for session in student_sessions:
+            for interaction in session["interactions"]:
+                question = interaction["question"]
+    
+                if interaction["correct_answer"] != "correct":
+                    misconceptions[question] += 1
+                else:
+                    mastery[question] += 1
+        
+        avg_interaction_duration = np.mean([interaction["answer_time"] for session in student_sessions for interaction in session["interactions"]])
+    
+        student_analytics = {
+            "total_sessions": total_sessions,
+            "total_interactions": total_interactions,
+            "total_correct_answers": total_correct_answers,
+            "total_incorrect_answers": total_incorrect_answers,
+            "total_partially_correct_answers": total_partially_correct_answers,
+            "avg_confidence_level": avg_confidence_level,
+            "avg_interaction_duration": avg_interaction_duration,
+            "concept_mastery": dict(mastery),
+            "misconceptions": dict(misconceptions)
+        }
+
+        logger.info(f"Student analytics successfully retrieved for student {student_id}")
+        return student_analytics
+
+    except Exception as e:
+        logger.error(f"Error retrieving analytics for student {student_id}: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+@app.get("/analytics/aggregate")
+async def get_aggregate_analytics():
+    try:
+       
+        logger.info("Retrieving aggregate analytics for all students")
+        
+        all_sessions = session_manager.all_details()
+        if not all_sessions:
+            logger.warning("No sessions available for aggregate analytics")
+            raise HTTPException(status_code=404, detail="No sessions found")
+        
+        
+        logger.info(f"all_sessions type: {type(all_sessions)}")
+        
+        total_sessions = 0
+        total_interactions = 0
+        total_confidence_levels = 0
+        total_answer_time = 0
+        common_misconceptions = defaultdict(int)
+        difficulty_progression = defaultdict(int)
+        student_count = len(all_sessions)
+        for student_id, student_sessions in all_sessions.items():
+            logger.info(f"Processing sessions for student {student_id}")
+            
+            for session in student_sessions:
+                total_sessions += 1
+                total_interactions += len(session["interactions"])
+                
+                
+                total_confidence_levels += sum(interaction["confidence_level"] for interaction in session["interactions"])
+                total_answer_time += sum(interaction["answer_time"] for interaction in session["interactions"])
+
+                
+                for interaction in session["interactions"]:
+                    if interaction["correct_answer"] != "correct":
+                        common_misconceptions[interaction["question"]] += 1
+                
+                # Track difficulty progression
+                difficulty_progression[session["difficulty_level"]] += 1
+        
+        
+        avg_confidence_level = total_confidence_levels / total_interactions if total_interactions > 0 else 0
+        avg_interaction_duration = total_answer_time / total_interactions if total_interactions > 0 else 0
+        
+        aggregate_analytics = {
+            "number_of_students": student_count,
+            "total_sessions": total_sessions,
+            "total_interactions": total_interactions,
+            "difficulty_progression": dict(difficulty_progression),
+            "avg_interaction_duration": avg_interaction_duration,
+            "avg_confidence_level": avg_confidence_level,
+            "common_misconceptions": dict(common_misconceptions)
+        }
+
+        logger.info("Aggregate analytics successfully retrieved")
+        return aggregate_analytics
+
+    except Exception as e:
+        logger.error(f"Error retrieving aggregate analytics: {str(e)}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
